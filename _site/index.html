@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Location Test</title>
+    <style>
+        body, main, div, input, button, h2{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-size: 100%;
+            border: none;
+        }
+        body {
+            background-color: #265886;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+        }
+        main {
+            max-width: 40em;
+            margin:  auto;
+            text-align: center;
+            display: flex;
+        }
+        textarea {
+            display: block;
+            margin: 0 auto;
+        }
+        button {
+            border-radius: 2px;
+            margin-left: .5em;
+            height: 29px;
+            width: 3.125em;
+            background-color: #E66000;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>Location对象的测试</h1>
+    <main>
+        <div id="column1">
+            <textarea name="query_text" id="query-text" cols="30" rows="10" placeholder="请输入"></textarea>
+            <textarea name="text_view" id="text-view" cols="30" rows="10" placeholder="等待结果"></textarea>
+        </div>
+        <div id="column2">
+            <button type="button" id="do-search">解析</button>
+        </div>
+    </main>
+    <script>
+        "use strict";
+        var btn_search = document.querySelector('#do-search');
+        var text_view = document.querySelector('#text-view');
+        var query, result;
+        var doSearchResolution = function (query_text) {
+            var args = {}, i, item, name, value;
+            if (!query_text.length) {
+                return false;
+            } else if (query_text.indexOf('?') !== -1){
+                query_text = query_text.split('?', 2)[1];
+            } else {
+                return false;
+            }
+            var pairs = query_text.split('&');
+            for (i = 0; i < pairs.length; i++) {
+                item = pairs[i].split('=');
+                if (!item[0].length) {
+                    return false;
+                } else {
+                    name = decodeURIComponent(item[0]);
+                    value = decodeURIComponent(item[1]);
+                    args[name] = value;
+                }
+            }
+            return args;
+        };
+        var printResult = function (result) {
+            var item;
+            var str = '';
+            for (item in result) {
+                str = str + item + ' : ' + result[item] + '\n';
+            }
+            text_view.value = str;
+        };
+        btn_search.addEventListener('click', function (event) {
+            query = document.querySelector('#query-text').value;
+            result = doSearchResolution(query);
+            if (result) {
+                printResult(result);
+            }
+        }, false);
+    </script>
+</body>
+</html>
